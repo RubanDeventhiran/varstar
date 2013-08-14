@@ -1,5 +1,5 @@
 (defproject varstar "0.7.0-SNAPSHOT"
-  :description "Deployer webservice for uploading R to Vertica."
+  :description "Deployer webservice for uploading Vertica UDFs."
   :url "http://example.com/FIXME"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojure-contrib "1.2.0"]
