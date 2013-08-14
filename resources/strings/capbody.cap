@@ -1,0 +1,110 @@
+##
+## Itemized tasks, for performing subtasks of library creation
+##
+task :df do
+  run "df -h"
+end
+namespace :dev do
+  desc <<-DESC
+  Installs packages in R.
+
+    Requires:
+      -s package=PACKAGENAME
+    Examples:
+      -s package="pack1"
+      -s package="c(pack2,pack3)"#untested
+DESC
+  task :r_install_package, :roles => :load do
+    run "Rscript -e \"install.packages('#{package}',repos='http://cran.cnr.berkeley.edu/')\""
+  end
+
+  task :r_install_local_package, :roles => :load do
+    run "Rscript -e \"install.packages('#{package}',repos=NULL,type='source')\""
+  end
+
+  namespace :push_lib do
+    desc <<-DESC
+Pushes library to dev server.
+
+Usage:
+  -s filepath=FILEPATH
+DESC
+    task :default do
+
+    end
+
+    desc "Upload file to uploads. Requires \"-s filepath=FILEPATH\"."
+    ### TODO make path into argument
+    task :upload_file, :roles => :load do
+      path = "#{filepath}"
+      target = "#{target}"
+#       bname = File.basename(path)
+      filename = "#{filename}"
+
+      if File.exist?(path)
+        upload(path,target+'/'+filename,:via => :sftp)
+        run "chmod -R 0766 /home/uploadscript/uploads/"
+      else
+        print "Error: File not found\n"
+      end
+    end
+
+    desc "Update all packages in R"
+    task :r_update_packages, :roles => :load do
+      run "Rscript -e \"update.packages(repos='http://cran.cnr.berkeley.edu/',ask=FALSE)\""
+    end
+  end
+end
+
+##
+## Itemized tasks, for performing subtasks of library creation
+##
+
+namespace :prod do
+  desc <<-DESC
+  Installs packages in R.
+
+    Requires:
+      -s package=PACKAGENAME
+    Examples:
+      -s package="pack1"
+      -s package="c(pack2,pack3)"#untested
+DESC
+  task :r_install_package, :roles => :prod do
+    run "Rscript -e \"install.packages('#{package}',repos='http://cran.cnr.berkeley.edu/')\""
+  end
+
+  task :r_install_local_package, :roles => :prod do
+    run "Rscript -e \"install.packages('#{package}',repos=NULL,type='source')\""
+  end
+
+  namespace :push_lib do
+    desc <<-DESC
+Pushes library to dev server.
+
+Usage:
+  -s filepath=FILEPATH
+DESC
+    task :default do
+
+    end
+
+    desc "Upload file to uploads. Requires \"-s filepath=FILEPATH\"."
+    task :upload_file, :roles => :prod do
+      path = "#{filepath}"
+      target= "#{target}"
+#       bname = File.basename(path)
+      filename = "#{filename}"
+      if File.exist?(path)
+        upload(path,target+'/'+filename,:via => :sftp)
+      else
+        raise "Error: File not found\n"
+      end
+    end
+
+    desc "Update all packages in R"
+    task :r_update_packages, :roles => :prod do
+      run "Rscript -e \"update.packages(repos='http://cran.cnr.berkeley.edu/',ask=FALSE)\""
+    end
+  end
+end
