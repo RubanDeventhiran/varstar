@@ -26,4 +26,4 @@ To start a web server for the application, run:
 ## License
 
 Copyright © 2013 One Kings Lane
-This project is covered under the [EPL][LICENCE]
+This project is covered under the [EPL](LICENCE)
