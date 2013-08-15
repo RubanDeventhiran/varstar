@@ -1,15 +1,14 @@
 
 $(document).ready(function(){
   setFileHandler();
-  $('#interact').tabs(
-//     { fx: { height: 'toggle', opacity: 'toggle' } }
-  );
+  $('#interact').tabs();
   setClearHandler();
+    setEnvWarnHandler();
   setDeployHandler();
   setQueryHandler();
   setPackageHandler();
   setLibraryHandler();
-  setStatus("Awaiting files")
+  setStatus("Awaiting files");
   
   setSidebar();
-})
+});

@@ -5,30 +5,38 @@ var addToFileList = function(data) {
         $(document.createElement('input')).attr('type','checkbox')
         .attr('value',item),
         item)
-    )
+    );
   });
-}
+};
 
 var clearFileList = function() {
-  $('#fileList').empty()
-}
+  $('#fileList').empty();
+};
 
 var setFileList = function(data) {
-  clearFileList()
-  addToFileList(data)
-}
+  clearFileList();
+  addToFileList(data);
+};
 
 var getActiveFileList = function() {
   return $.grep($('.fileListItem').children('input'),function(val,index){
-    return val.checked
+    return val.checked;
   }).map(function(val,index) {
-    return val.value
+    return val.value;
   });
-}
+};
 
-getEnvironment = function() {
+var setEnvWarnHandler = function() {
+    $('#input-env-prod').click(function(e) {
+        if(!window.confirm("Are you sure you want to select the production environment?")) {
+            e.preventDefault();
+        }
+    });
+};
+
+var getEnvironment = function() {
   return $('#input-env').children('.active')[0].firstChild.value;
-}
+};
 
 var setFileHandler = function () {
   $('#input-action-upload').click(function(e) {
@@ -45,7 +53,7 @@ var setFileHandler = function () {
       success: function(data){
         var jdata = $.parseJSON(data);
         setStatus(unescape(jdata.out));
-        setFileList(jdata.data)
+        setFileList(jdata.data);
         $('#fileUpload')
         .not(':button, :submit, :reset, :hidden')
         .val('')
@@ -53,7 +61,7 @@ var setFileHandler = function () {
         .removeAttr('selected');
       }
     });
-  })
+  });
 }
 
 var setClearHandler = function() {
@@ -68,7 +76,7 @@ var setClearHandler = function() {
 
 var setDeployHandler = function() {
   $('#input-action-deploy').click(function(e) {
-    setStatus("Deploying...")
+    setStatus("Deploying...");
     var clear = $('#input-check-clear')[0].checked
     $.post('/deploy',
            {filter: getActiveFileList(),
@@ -76,10 +84,10 @@ var setDeployHandler = function() {
             clear: clear},
            function(callback){
              var jcallback = $.parseJSON(callback);
-             setStatus(jcallback.out)
+             setStatus(jcallback.out);
              if (clear) {
-               clearFileList()
+               clearFileList();
              }
-           })
-  })
-}
+           });
+  });
+};
