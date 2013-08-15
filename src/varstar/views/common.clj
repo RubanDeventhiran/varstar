@@ -14,7 +14,7 @@
     (include-js
      "http://code.jquery.com/jquery-1.9.1.js"
      "http://code.jquery.com/ui/1.10.3/jquery-ui.js"
-     "script/bootstrap.js"
+     "script/bootstrap.min.js"
      "script/upload-script.js"
      "script/status.js"
      "script/tabs.js"
