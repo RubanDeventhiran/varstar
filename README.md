@@ -16,8 +16,7 @@ with ssh-key access from the computer this deployer will be put on.
 
 ## Installation
 
-Note that to install Vertica driver, some Lein plugin is needed. TODO ask Alex
-what he used.
+Note that to install Vertica driver, some Lein plugin is needed.
 
 First, install all prerequisites, then
     
