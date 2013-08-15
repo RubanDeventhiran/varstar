@@ -1,6 +1,8 @@
 (defproject varstar "0.7.0-SNAPSHOT"
   :description "Deployer webservice for uploading Vertica UDFs."
-  :url "http://example.com/FIXME"
+  :license {:name "Eclipse Public License"
+            :url "http://www.eclipse.org/legal/epl-v10.html"}
+  :url "https://github.com/okl/varstar"
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [org.clojure/clojure-contrib "1.2.0"]
                  [org.clojure/java.jdbc "0.3.0-alpha4"]
