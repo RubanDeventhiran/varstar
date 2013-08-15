@@ -8,6 +8,9 @@
 
 (def capfile-body (slurp "resources/strings/capbody.cap"))
 
+(try (slurp "resources/strings/capbody.rb")
+     (catch Exception e (.getMessage e)))
+
 (defn- append-file! [file string]
   (spit file string :append true))
 
@@ -49,7 +52,15 @@
                        (:upload-target)))))
 
 (defn conf []
-  (YamlConf. (yaml/parse-string (slurp "conf.yml"))))
+  (YamlConf.
+   (yaml/parse-string
+    (try (slurp "conf.yml")
+         (catch java.io.FileNotFoundException e
+           (spit "conf.yml"
+                 (slurp "resources/strings/conf.yml.default")))))))
+
+;; Force create blank conf.yml on initialization 
+(conf)
 
 (defn- parse-nodes [nodes]
   (apply str (map #(format ", \"%s\"" %) nodes)))

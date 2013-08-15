@@ -1,0 +1,24 @@
+load:
+  roles:   
+    - 
+  gateway: 
+  authentication:
+    classname:
+    subprotocol:
+    subname:
+    user:
+    password:
+  upload-user:
+  upload-target:
+prod:
+  roles:
+    -
+  gateway:
+  authentication:
+    classname:
+    subprotocol:
+    subname:
+    user:
+    password:
+  upload-user:
+  upload-target:
