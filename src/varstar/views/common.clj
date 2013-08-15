@@ -9,7 +9,7 @@
     [:meta {:name "viewport"
             :content "width=device-width, initial-scale=1.0"}]
     (include-css
-     "css/bootstrap.css"
+     "css/bootstrap.min.css"
      "css/style.css")
     (include-js
      "http://code.jquery.com/jquery-1.9.1.js"
