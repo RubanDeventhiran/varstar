@@ -13,15 +13,18 @@ and [Capistrano][3] 2.15.4 or above installed.
 [3]: https://github.com/capistrano/capistrano
 
 Additionally, you will need [Vertica](http://www.vertica.com/) set up.
-Each Vertica node needs to have an account for uploading 
-with ssh-key access from the computer this deployer will be put on.
+
+Each Vertica node needs an uploader account with uploading privileges for uploading files and executing shell commands (only for installing packages to Vertica's instance of R). The account needs ssh-key access from the computer/server this deployer will be put on.
+
+The uploader account should also ensure that the right file permissions are applied to uploaded files, so that Vertica can read the files.
+
+The Vertica authentication account must have superuser privileges in order to execute create and drop library/function commands.
 
 ## Installation
 
-First, install all prerequisites.
+First, install all prerequisite software.
 
-Then, install your suitable Vertica driver, by placing a copy of the driver jar in the project and running the following command:
-
+Then, install your suitable Vertica driver by placing a copy of the driver jar in the project, and running the following command:
     
     lein localrepo coords <rel-path-to>/<vertica-driver>.jar | xargs lein localrepo install
 
