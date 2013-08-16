@@ -47,7 +47,7 @@ To use the web service:
 R/Vertica file restrictions:
 
 - The file name is used for library name.
-- The function name is used for function name.
+- The function name is used for function name in Vertica.
 
 Note that Vertica could care less, but it keeps maintenance much simpler.
 
