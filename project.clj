@@ -15,7 +15,8 @@
                  [cheshire "5.2.0"]
                  ]
   :plugins [[lein-ring "0.8.6"]
-            [lein-marginalia "0.7.1"]]
+            [lein-marginalia "0.7.1"]
+            [lein-localrepo "0.5.2"]]
   :ring {:handler varstar.handler/app}
   :profiles
   {:dev {:dependencies [[ring-mock "0.1.5"]
