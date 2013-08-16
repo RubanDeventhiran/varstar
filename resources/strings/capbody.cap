@@ -43,7 +43,7 @@ DESC
 
       if File.exist?(path)
         upload(path,target+'/'+filename,:via => :sftp)
-        run "chmod -R 0766 /home/uploadscript/uploads/"
+        run "chmod -R 0755 #{target}"
       else
         print "Error: File not found\n"
       end
