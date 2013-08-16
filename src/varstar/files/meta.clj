@@ -6,7 +6,6 @@
 (ns varstar.files.meta
   (:require [clj-yaml.core :as yaml]))
 
-
 (defn- remove-comments [fn-body]
   (clojure.string/replace fn-body #"#.*\n" ""))
 
@@ -54,19 +53,39 @@
     (not (or (nil? (re-find #"name=" body))
              (nil? (re-find #"udxtype=" body))))))
 
-(defn make-identifier
-  "Takes file info and parses meta information for creating deployment query."
+(defn- fileext-to-udf-type [fileext]
+  (case fileext
+    "R" "R"
+    "so" "C++"
+    ;; Should not hit default statement
+    ""))
+
+(defn- make-R-identifier
   [filename actual-file]
   (let [func (tokenize-functions (remove-comments (slurp actual-file)))]
     (reduce
      (fn [funclist f]
        (cons (-> (extract-factory (last f))
                  (assoc :library filename)
+                 (assoc :type "R")
+                 (assoc :filename (str filename ".R"))
                  (assoc :factory (name (first f))))
              funclist))
      '()
      (filter is-factory func))))
 
+(defn- make-cpp-identifier
+  [filename actual-file]
+  (throw (Exception. "Unimplemented")))
+
+(defn make-identifier
+  "Takes file info and parses meta information for creating deployment query."
+  [filename fileext actual-file]
+  (case fileext
+    "R" (make-R-identifier filename actual-file)
+    "so" (make-cpp-identifier filename actual-file)
+    ))
+  
 (defn- convert-libmap-to-facmap
   "Reindexes library map to factory for collision search"
   [lib-map]

@@ -130,24 +130,29 @@
 (defn- get-libraries
   "From metadata extract unique libraries to upload"
   [metadata]
-  (set (map #(:library %) metadata)))
+  (set (map #(select-keys
+              %
+              [:library :type :filename])
+            metadata)))
 
 (defn- load-lib! [library env]
   (let [query (q/create-lib-query
-               library
-               (str library ".R")
-               (c/upload-target (c/conf) env))]
+               (:library library)
+               (:filename library)
+               (c/upload-target (c/conf) env)
+               (:type library))]
     (prn query)
     (jdbc/execute! (vertica env) [query])))
 
 (defn- load-func! [metadata env]
   (let [query (q/create-func-query
-               (if (= "transform" (:udxtype metadata))
-                 "transform"
-                 "")
+               (case (:udxtype metadata)
+                 "transform" "transform"
+                 "scalar" "")
                (:name    metadata)
                (:factory metadata)
-               (:library metadata))]
+               (:library metadata)
+               (:type    metadata))]
     (prn query)
     (jdbc/execute! (vertica env) [query])))
 
@@ -163,6 +168,8 @@
                (load-func! f env)))))
   )
 
+;; So far, (jdbc/query) does a pretty good job. It only allows one
+;; statement, and does not execute anything that updates the database.
 (defn- sanitize [query]
   query)
 

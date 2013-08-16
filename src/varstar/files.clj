@@ -55,6 +55,11 @@
   [path]
   ((string/split path #"\.") 0))
 
+(defn- get-extension
+  "Get file extension from filename"
+  [path]
+  (last (string/split path #"\.")))
+
 (defn- if-exists [session subgroup]
   (if-let [sg (subgroup session)]
     sg
@@ -71,9 +76,6 @@
   (let [files (if-exists session :files)
         metalist (if-exists session :meta)
         diff-metalist (remove-collision metalist metainfo)]
-    (prn metainfo)
-    (prn metalist)
-    (prn diff-metalist)
     (-> session
         (assoc :files (cons file files))
         (assoc :meta (concat metainfo diff-metalist)))))
@@ -87,11 +89,13 @@
   [session file]
   (let [filename    (:filename file)
         shortfn     (remove-extension filename)
+        fileext     (get-extension filename)
         size        (:size file)
         actual-file (:tempfile file)
         metadata    (m/make-identifier
                      shortfn
-                     actual-file )]
+                     fileext
+                     actual-file)]
     (if (< 0 (count metadata))
       (let [new-session (add-to-session session file metadata)]
         (prn new-session)

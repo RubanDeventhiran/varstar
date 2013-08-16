@@ -1,5 +1,5 @@
 ;;;; Views provides dynamic html embedded with content
-;;;;     (page-main) : nil
+;;;;     (page-main) : html
 (ns varstar.views
   (:require [hiccup.core :as hic]
             [hiccup.def :as hdef]
@@ -17,9 +17,10 @@
 (defn- navbar []
   [:div {:class "navbar"}
    [:ul {:class "nav navbar-nav nav-tabs"}
-    [:li [:a {:href "#upload"
-              :data-toggle "tab"}
-          "Upload Files"]]
+    [:li {:class "active"}
+     [:a {:href "#upload"
+          :data-toggle "tab"}
+      "Upload Files"]]
     [:li [:a {:href "#query"
               :data-toggle "tab"}
           "Query"]]
@@ -48,7 +49,7 @@
    [:div {:class "sidebar-content"
           :id "sidebar-content"}]])
 
-(defn- status-bar []
+(defn- status-bar [status]
   [:div {:class "status lead"
          :id "status"}
    [:p status]])
@@ -140,19 +141,16 @@
    (library-tab)
    ])
 
-;;;TODO: functionize the html
 (hdef/defhtml
  body [status &]
  [:div {:class "widget row"
         :id "interact"}
   (navbar)
-  (status-bar)
+  (status-bar status)
   [:div {:class "row"}
    (tab-content)
    (sidebar)
-   ]]
-
- )
+   ]])
 
 (defn page-main
   ([status funcs uploads]
