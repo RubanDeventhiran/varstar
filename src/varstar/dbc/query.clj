@@ -6,9 +6,9 @@
   (format "create library %s as '%s/%s' language '%s';"
           libname upload-target filename type))
 
-(defn create-func-query [transform funcname factoryname libname type]
+(defn create-func-query [udxtype funcname factoryname libname type]
   (format "create %s function %s as language '%s' name '%s' library %s;"
-          transform funcname type factoryname libname))
+          udxtype funcname type factoryname libname))
 
 (defn drop-func-query [transform funcname arglist]
   (format "drop %s function %s(%s)"
