@@ -70,7 +70,9 @@
   [user gateway]
   (spit "Capfile"
         (str "set :user, \"" user "\"\n"
-             "set :gateway, \"" gateway "\"\n"
+             (if (nil? gateway)
+               ""
+               (str "set :gateway, \"" gateway "\"\n"))
              "set :current_path, \"\"\n")))
 
 (defn- build-roles!
