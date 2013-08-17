@@ -25,8 +25,10 @@
                (prn (sh "cap"
                    (str e ":push_lib:upload_file")
                    "-s"
-                   (str "filepath=uploads/" tempfile)
+                   (str "filepath=" tempfile)
+                   "-s"
                    (str "target=" target)
+                   "-s"
                    (str "filename=" filename)))
                )))))
 

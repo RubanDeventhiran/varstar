@@ -36,13 +36,12 @@ DESC
     desc "Upload file to uploads. Requires \"-s filepath=FILEPATH\"."
     ### TODO make path into argument
     task :upload_file, :roles => :load do
-      path = "#{filepath}"
-      target = "#{target}"
-#       bname = File.basename(path)
-      filename = "#{filename}"
-
-      if File.exist?(path)
-        upload(path,target+'/'+filename,:via => :sftp)
+      if File.exist?("#{filepath}")
+        upload("#{filepath}",
+               "#{target}/#{filename}",
+               :via => :sftp,
+               :mode => "0766"
+               )
         run "chmod -R 0755 #{target}"
       else
         print "Error: File not found\n"
@@ -91,12 +90,11 @@ DESC
 
     desc "Upload file to uploads. Requires \"-s filepath=FILEPATH\"."
     task :upload_file, :roles => :prod do
-      path = "#{filepath}"
-      target= "#{target}"
-#       bname = File.basename(path)
-      filename = "#{filename}"
-      if File.exist?(path)
-        upload(path,target+'/'+filename,:via => :sftp)
+      if File.exist?("#{filepath}")
+        upload("#{filepath}",
+               "#{target}/#{filename}",
+               :via => :sftp,
+               :mode => "0766")
       else
         raise "Error: File not found\n"
       end
