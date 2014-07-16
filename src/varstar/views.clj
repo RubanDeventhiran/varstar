@@ -27,20 +27,21 @@
     [:li [:a {:href "#package"
               :data-toggle "tab"}
           "Install library"]]]
-   [:div {:class "btn-group"
-          :id "input-env"
-          :data-toggle "buttons"}
-    [:label {:class "btn btn-default active"
-             :id "input-env-load"}
-     [:input {:type "radio"
-              :name "env"
-              ;; Can't use load, capistrano rejects it.
-              :value "dev"} "Load"]]
-    [:label {:class "btn btn-default"
-             :id "input-env-prod"}
-     [:input {:type "radio"
-              :name "env"
-              :value "prod"} "Prod"]]]]
+   ;; [:div {:class "btn-group"
+   ;;        :id "input-env"
+   ;;        :data-toggle "buttons"}
+   ;;  [:label {:class "btn btn-default active"
+   ;;           :id "input-env-load"}
+   ;;   [:input {:type "radio"
+   ;;            :name "env"
+   ;;            Can't use load, capistrano rejects it.
+   ;;            :value "dev"} "Load"]]
+   ;;  [:label {:class "btn btn-default"
+   ;;           :id "input-env-prod"}
+   ;;   [:input {:type "radio"
+   ;;            :name "env"
+   ;;            :value "prod"} "Prod"]]]
+   ]
   )
 
 (defn- sidebar []

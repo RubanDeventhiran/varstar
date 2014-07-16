@@ -1,7 +1,7 @@
 var setQueryHandler = function () {
   $('#input-action-query').click(function(e) {
-    $.post('/query',{query: $('#input-text-query')[0].value,
-                     env: getEnvironment()},function(callback){
+    $.post('/query',{query: $('#input-text-query')[0].value
+					},function(callback){
       setStatus(callback)
       if (callback.indexOf('[Vertica][VJDBC]') == -1) {
         console.log($('#input-text-query'))

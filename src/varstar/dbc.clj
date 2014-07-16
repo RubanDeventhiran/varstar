@@ -18,8 +18,8 @@
 
 (defn- vertica
   "Defines the Vertica connection"
-  [env]
-  (c/authentication (c/conf) env))
+  []
+  (c/authentication (c/conf)))
 
 (defn- find-key
   "Boilerplate for extracting value from string"
@@ -42,9 +42,9 @@
 
 (defn get-active-UDF
   "Gets active UDFs from vertica."
-  [env]
+  []
   (let [query
-        (jdbc/query (vertica env)
+        (jdbc/query (vertica)
                     ["SELECT function_name,
                      function_definition,
                      function_argument_type,
@@ -59,11 +59,11 @@
            (assoc :udxtype (get-udxtype (:procedure_type e)))))
      query)))
 
-(defn setup-env!
-  "Prepares for connection to environment"
-  [env]
-  (c/gen-capfile! (c/conf) env)
-  (cap/update-packages! env)
+(defn setup-conn!
+  "Prepares connection to servers"
+  []
+  (c/gen-capfile! (c/conf))
+  (cap/update-packages!)
   )
 
 (defn get-path
@@ -72,13 +72,12 @@
 
 (defn upload-files-vertica!
   "Uploads list of files to vertica"
-  [files env]
+  [files]
   ;;   (for [f files]
   ;;     (l/upload-file (:filename f) (:tempfile f)))
   (cap/upload-files!
    (map #(vector (:filename %) (get-path (:tempfile %))) files)
-   (c/upload-target (c/conf) env)
-   env))
+   (c/upload-target (c/conf))))
 
 (defn- get-unload-functions
   "Filter functions for removal query"
@@ -98,7 +97,7 @@
     (set (filter #(some #{%} f-lib-pool) loaded-lib))))
 
 (defn- unload-func!
-  [func env]
+  [func]
   (let [query (q/drop-func-query
                (:udxtype func)
                (:function_name func)
@@ -106,26 +105,26 @@
                  (if (= args "Any")
                    ""
                    args)))]
-    (jdbc/execute! (vertica env) [query])))
+    (jdbc/execute! (vertica) [query])))
 
 (defn- unload-lib!
-  [lib env]
+  [lib]
   (let [query (q/drop-lib-query lib)]
-    (jdbc/execute! (vertica env) [query])))
+    (jdbc/execute! (vertica) [query])))
 
 (defn unload-libraries!
   "Unloads libraries and functions to remove conflicts with incoming uploads"
-  [funcs loaded env]
+  [funcs loaded]
   (let [ul-func-list (get-unload-functions funcs loaded)
         ul-lib-list (get-unload-libraries funcs loaded)]
     (if (< 0 (count ul-func-list))
       (doall
        (for [f ul-func-list]
-         (unload-func! f env))))
+         (unload-func! f))))
     (if (< 0 (count ul-lib-list))
       (doall
        (for [l ul-lib-list]
-         (unload-lib! l env))))))
+         (unload-lib! l))))))
 
 (defn- get-libraries
   "From metadata extract unique libraries to upload"
@@ -135,16 +134,16 @@
               [:library :type :filename])
             metadata)))
 
-(defn- load-lib! [library env]
+(defn- load-lib! [library]
   (let [query (q/create-lib-query
                (:library library)
                (:filename library)
-               (c/upload-target (c/conf) env)
+               (c/upload-target (c/conf))
                (:type library))]
     (prn query)
-    (jdbc/execute! (vertica env) [query])))
+    (jdbc/execute! (vertica) [query])))
 
-(defn- load-func! [metadata env]
+(defn- load-func! [metadata]
   (let [query (q/create-func-query
                (case (:udxtype metadata)
                  "transform" "transform"
@@ -154,40 +153,40 @@
                (:library metadata)
                (:type    metadata))]
     (prn query)
-    (jdbc/execute! (vertica env) [query])))
+    (jdbc/execute! (vertica) [query])))
 
 (defn load-libraries!
   "Loads libraries as per provided metadata, then loads functions"
-  [metadata env]
+  [metadata]
   (let [lib-list (get-libraries metadata)]
     (if (< 0 (count lib-list))
       (doall (for [l lib-list]
-               (load-lib! l env))))
+               (load-lib! l))))
     (if (< 0 (count metadata))
       (doall (for [f metadata]
-               (load-func! f env)))))
+               (load-func! f)))))
   )
 
 ;; So far, (jdbc/query) does a pretty good job. It only allows one
 ;; statement, and does not execute anything that updates the database.
 (defn- sanitize [query]
+  ;;;TODO: sanitize the query
   query)
 
 (defn run-query
   "Executes query, testing for success status"
-  [query env]
+  [query]
   (let [sanitized-query (sanitize query)]
     (try
-      ;;;TODO: sanitize the query
-      (jdbc/query (vertica env) [sanitized-query]
+      (jdbc/query (vertica) [sanitized-query]
                   :result-set-fn (fn [& _] "Query successful"))
       (catch Exception e (str (.getMessage e))))))
 
 (defn- run-update
   "Executes query, testing for success status"
-  [query env]
+  [query]
   (try
-    (jdbc/execute! (vertica env) [query]
+    (jdbc/execute! (vertica) [query]
                    :result-set-fn (fn [& _] "Query successful"))
     (catch Exception e (str (.getMessage e))))
   )
@@ -196,8 +195,8 @@
 ;; (run-update "drop library testLib" "load")
 
 (defn load-user-package!
-  [filename env]
-  (cap/load-custom-package! filename env))
+  [filename]
+  (cap/load-custom-package! filename))
 
 ;; N.B. currently watered down to only handle one package at a time
 (defn install-package!

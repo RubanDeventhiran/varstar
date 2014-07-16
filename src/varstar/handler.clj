@@ -23,21 +23,21 @@
 
 (defn- deploy!
   ""
-  [session clear filter-list env]
+  [session clear filter-list]
   ; Read in meta files, create list of files and queries to execute
   (try
     (let [files (f/get-file-list session)
           fcs (f/get-identifiers session)
           active-functions (filter-funcs fcs filter-list)
-          loaded (d/get-active-UDF env)]
-      (println "Setting up environment...")
-      (d/setup-env! env)
+          loaded (d/get-active-UDF)]
+      (println "Setting up connection...")
+      (d/setup-conn!)
       (println "Uploading files...")
-      (d/upload-files-vertica! (:files session) env)
+      (d/upload-files-vertica! (:files session))
       (println "Unloading conflicting libraries...")
-      (d/unload-libraries! active-functions loaded env)
+      (d/unload-libraries! active-functions loaded)
       (print "Loading libraries...")
-      (d/load-libraries! active-functions env)
+      (d/load-libraries! active-functions)
       (if (nil? clear)
         (do
           (println "done.")
@@ -52,13 +52,13 @@
       {:status {:out (str (.getMessage e))}
        :session session})))
 
-(defn- load-user-package! [file env]
+(defn- load-user-package! [file]
   (if (< 0 (:size file))
     (try
       (println "Uploading package...")
-      (d/upload-files-vertica! '(file) env)
+      (d/upload-files-vertica! '(file))
       (print "Loading file to R...")
-      (d/load-user-package! (:filename file) env)
+      (d/load-user-package! (:filename file))
       (println "done.")
       "Upload successful"
       (catch Exception e (str (.getMessage e)))
@@ -100,7 +100,7 @@
                   params :params}
        (let [output {:status (try
                                ;; Switch with ajax
-                               (v/load-html (d/get-active-UDF "prod"))
+                               (v/load-html (d/get-active-UDF))
                                (catch Exception e (.getMessage e)))
                      :session session}]
          (response output)))
@@ -133,14 +133,13 @@
          (println "Executing deployment...")
          (let [output (deploy! session
                               (#{"true"} (get params :clear))
-                              (get params :filter)
-                              (get params :env))]
+                              (get params :filter))]
            (ajax-response output))))
   (mp/wrap-multipart-params
    (POST "/query" {session :session
                    params :params}
          (println "Executing query: \"" (get params :query) "\"")
-         (let [output {:status (d/run-query (get params :query) (get params :env))
+         (let [output {:status (d/run-query (get params :query))
                        :session session}]
            (ajax-response output))))
   (mp/wrap-multipart-params
@@ -153,8 +152,7 @@
                        (if (string? file)
                          {:out "No package to upload"}
                          {:out (load-user-package!
-                                file
-                                (get params :env))})}]
+                                file)})}]
            (ajax-response output))))
   (POST "/install" {session :session
                     params :params}

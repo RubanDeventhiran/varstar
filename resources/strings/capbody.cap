@@ -14,11 +14,11 @@ namespace :dev do
       -s package="pack1"
       -s package="c(pack2,pack3)"#untested
 DESC
-  task :r_install_package, :roles => :load do
+  task :r_install_package, :roles => :stg do
     run "Rscript -e \"install.packages('#{package}',repos='http://cran.cnr.berkeley.edu/')\""
   end
 
-  task :r_install_local_package, :roles => :load do
+  task :r_install_local_package, :roles => :stg do
     run "Rscript -e \"install.packages('#{package}',repos=NULL,type='source')\""
   end
 
@@ -35,7 +35,7 @@ DESC
 
     desc "Upload file to uploads. Requires \"-s filepath=FILEPATH\"."
     ### TODO make path into argument
-    task :upload_file, :roles => :load do
+    task :upload_file, :roles => :stg do
       if File.exist?("#{filepath}")
         upload("#{filepath}",
                "#{target}/#{filename}",
@@ -49,7 +49,7 @@ DESC
     end
 
     desc "Update all packages in R"
-    task :r_update_packages, :roles => :load do
+    task :r_update_packages, :roles => :stg do
       run "Rscript -e \"update.packages(repos='http://cran.cnr.berkeley.edu/',ask=FALSE)\""
     end
   end

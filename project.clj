@@ -10,7 +10,7 @@
                  [hiccup "1.0.4"]
                  [lib-noir "0.6.6"]
                  [ring-server "0.2.8"]
-                 [vertica-jdk5/vertica-jdk5 "6.1.0-0"]
+                 [vertica-jdk5/vertica-jdk5 "6.1.3-0"]
                  [clj-yaml "0.4.0"]
                  [cheshire "5.2.0"]
                  ]

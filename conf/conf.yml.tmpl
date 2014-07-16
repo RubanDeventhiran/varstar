@@ -1,0 +1,29 @@
+###
+### Configuration file for Varstar
+###
+### Specify servers and authentication schemes here
+###
+
+# Comma-separated list of servers where vertica is deployed
+servers: __VERTICA_DB_SERVER_LIST__
+
+# Gateway to servers, if any
+gateway: __VERTICA_GATEWAY__
+
+# Database authentication scheme
+authentication:
+    # Driver class (e.g. "com.vertica.jdbc.Driver")
+    classname: __VR_AUTH_CLASSNAME__
+    # Protocol name (e.g. "vertica")
+    subprotocol: __VR_AUTH_SUBPROTOCOL__
+    # Vertica connection name (e.g. "//127.0.0.1:5000/db")
+    subname: __VR_AUTH_SUBNAME__
+    # Vertica connection username
+    user: __VR_AUTH_USER__
+    # Vertica connection password
+    password: __VR_AUTH_PASSWORD__
+
+# SSH uploading user account
+upload-user: __VR_UPLOAD_USER__
+# SSH uploading user password
+upload-target: __VR_UPLOAD_PASSWORD__

@@ -26,18 +26,6 @@ var getActiveFileList = function() {
   });
 };
 
-var setEnvWarnHandler = function() {
-    $('#input-env-prod').click(function(e) {
-        if(!window.confirm("Are you sure you want to select the production environment?")) {
-            e.preventDefault();
-        }
-    });
-};
-
-var getEnvironment = function() {
-  return $('#input-env').children('.active')[0].firstChild.value;
-};
-
 var setFileHandler = function () {
   $('#input-action-upload').click(function(e) {
     e.preventDefault();
@@ -80,7 +68,6 @@ var setDeployHandler = function() {
     var clear = $('#input-check-clear')[0].checked
     $.post('/deploy',
            {filter: getActiveFileList(),
-            env: getEnvironment(),
             clear: clear},
            function(callback){
              var jcallback = $.parseJSON(callback);

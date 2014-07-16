@@ -3,7 +3,6 @@ var setPackageHandler = function() {
 
     var formData = new FormData(this);
     formData.append('file',$('#input-file-package')[0].files[0])
-    formData.append('env',getEnvironment())
     $.ajax({
       url: '/package',
       data: formData,
@@ -27,8 +26,7 @@ var setPackageHandler = function() {
 var setLibraryHandler = function () {
   $('#input-action-library').click(function(e) {
     $.post('/install',
-           {package: $('#input-text-library')[0].value,
-            env: getEnvironment()},
+           {package: $('#input-text-library')[0].value},
            function(callback){
              var jcallback = $.parseJSON(callback);
              setStatus(jcallback.out)

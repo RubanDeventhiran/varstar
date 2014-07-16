@@ -2,7 +2,7 @@
 ;;;; and generates capfile data
 ;;;;
 ;;;;     (conf) : capistranoProtocol
-;;;;     (gen-capfile conf env) : nil
+;;;;     (gen-capfile conf) : nil
 (ns varstar.dbc.conf
   (:require [clj-yaml.core :as yaml]))
 
@@ -14,52 +14,31 @@
 (defn- append-file! [file string]
   (spit file string :append true))
 
-(defn- sanitize-env [env]
-  (if (= env "prod") :prod :load))
-
 (defprotocol CapistranoProtocol
   "Required information for capistrano"
-  (user [this env] "Username of the account used for uploading")
-  (gateway [this env] "Gateway")
-  (roles [this] "Lists of servers, for both prod and load")
-  (authentication [this env] "Gets authentication scheme for given env")
-  (upload-target [this env] "Gets the upload target path for Vertica"))
+  (user [this] "Username of the account used for uploading")
+  (gateway [this] "Gateway")
+  (roles [this] "List of servers")
+  (authentication [this] "Gets authentication scheme")
+  (upload-target [this] "Gets the upload target path for Vertica"))
 
 (deftype YamlConf [k=>v]
   CapistranoProtocol
-  (user [this env]
-        (let [e (sanitize-env env)]
-          (-> k=>v
-              (e)
-              (:upload-user))))
-  (gateway [this env]
-           (let [e (sanitize-env env)]
-             (-> k=>v
-                 (e)
-                 (:gateway))))
-  (roles [this]
-         {:load (:roles (:load k=>v))
-          :prod (:roles (:prod k=>v))})
-  (authentication [this env]
-                  (let [e (sanitize-env env)]
-                    (-> k=>v
-                        (e)
-                        (:authentication))))
-  (upload-target [this env]
-                 (let [e (sanitize-env env)]
-                   (-> k=>v
-                       (e)
-                       (:upload-target)))))
+  (user [this] (:upload-user k=>v))
+  (gateway [this] (:gateway k=>v))
+  (roles [this] (:servers k=>v))
+  (authentication [this] (:authentication k=>v))
+  (upload-target [this] (:upload-target k=>v)))
 
 (defn conf []
   (YamlConf.
    (yaml/parse-string
-    (try (slurp "conf.yml")
+    (try (slurp "conf/conf.yml")
          (catch java.io.FileNotFoundException e
-           (spit "conf.yml"
+           (spit "conf/conf.yml"
                  (slurp "resources/strings/conf.yml.default")))))))
 
-;; Force create blank conf.yml on initialization 
+;; Force create blank conf.yml on initialization
 (conf)
 
 (defn- parse-nodes [nodes]
@@ -86,8 +65,7 @@
 (defn- build-funcs! []
   (append-file! "Capfile" capfile-body))
 
-(defn gen-capfile! [conf env]
-  (build-credentials! (user conf env) (gateway conf env))
+(defn gen-capfile! [conf]
+  (build-credentials! (user conf) (gateway conf))
   (build-roles! (roles conf))
   (build-funcs!))
-

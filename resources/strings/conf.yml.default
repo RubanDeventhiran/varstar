@@ -1,24 +1,10 @@
-load:
-  roles:   
-    - 
-  gateway: 
-  authentication:
-    classname:
-    subprotocol:
-    subname:
-    user:
-    password:
-  upload-user:
-  upload-target:
-prod:
-  roles:
-    -
-  gateway:
-  authentication:
-    classname:
-    subprotocol:
-    subname:
-    user:
-    password:
-  upload-user:
-  upload-target:
+servers: __VERTICA_DB_SERVER_LIST__
+gateway: __VERTICA_GATEWAY__
+authentication:
+    classname: "com.vertica.jdbc.Driver"
+    subprotocol: "vertica"
+    subname: "//127.0.0.1:8080/db"
+    user: "admin"
+    password: "adminpass"
+upload-user:
+upload-target:
