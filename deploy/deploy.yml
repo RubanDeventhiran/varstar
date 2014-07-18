@@ -14,6 +14,10 @@
   tasks:
     - include: "{{ ans_loc }}/roles/common/tasks/deploy.yml"
 
+    - name: grab dependencies
+      command: chdir="{{ release_dir }}"
+               /usr/local/bin/lein deps
+
     - name: start webserver
       shell: chdir="{{ release_dir }}"
              /usr/local/bin/lein ring server-headless &
