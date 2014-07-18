@@ -16,3 +16,10 @@
 
 (defn drop-lib-query [libname]
   (format "drop library %s" libname))
+
+(defn select-active-query []
+  "SELECT function_name,
+                     function_definition,
+                     function_argument_type,
+                     procedure_type
+                     FROM user_functions")

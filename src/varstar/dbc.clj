@@ -45,11 +45,7 @@
   []
   (let [query
         (jdbc/query (vertica)
-                    ["SELECT function_name,
-                     function_definition,
-                     function_argument_type,
-                     procedure_type
-                     FROM user_functions"])]
+                    [(q/select-active-query)])]
     (map
      (fn [e]
        ;; e contains :function_name, :function_argument_type
