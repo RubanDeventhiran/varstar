@@ -26,8 +26,6 @@
   user: okluser
   vars_files:
     - "{{ ans_loc }}/roles/common/vars/deploy.yml"
-  vars:
-    null-var: ""
   tasks:
     - name: start webserver
       command: chdir="{{ release_dir }}"
