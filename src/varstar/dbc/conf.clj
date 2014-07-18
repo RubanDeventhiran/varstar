@@ -2,7 +2,7 @@
 ;;;; and generates capfile data
 ;;;;
 ;;;;     (conf) : capistranoProtocol
-;;;;     (gen-capfile conf) : nil
+;;;;     (gen-capfile! conf) : nil
 (ns varstar.dbc.conf
   (:require [clj-yaml.core :as yaml]
             [clojure.string :as s]))
