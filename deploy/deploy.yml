@@ -8,12 +8,12 @@
 ---
 
 - hosts: varstar
-  user: okluser
+  user: oklrelease
   vars_files:
     - "{{ ans_loc }}/roles/common/vars/deploy.yml"
   tasks:
     - include: "{{ ans_loc }}/roles/common/tasks/deploy.yml"
 
     - name: start webserver
-      command: chdir="{{ release_dir }}"
-              /usr/local/bin/lein ring server
+      shell: chdir="{{ release_dir }}"
+             /usr/local/bin/lein ring server-headless &
