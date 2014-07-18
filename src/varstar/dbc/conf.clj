@@ -4,7 +4,8 @@
 ;;;;     (conf) : capistranoProtocol
 ;;;;     (gen-capfile conf) : nil
 (ns varstar.dbc.conf
-  (:require [clj-yaml.core :as yaml]))
+  (:require [clj-yaml.core :as yaml]
+            [clojure.string :as s]))
 
 (def capfile-body (slurp "resources/strings/capbody.cap"))
 
@@ -26,7 +27,7 @@
   CapistranoProtocol
   (user [this] (:upload-user k=>v))
   (gateway [this] (:gateway k=>v))
-  (roles [this] (:servers k=>v))
+  (roles [this] (s/split (:servers k=>v) #",\ *"))
   (authentication [this] (:authentication k=>v))
   (upload-target [this] (:upload-target k=>v)))
 
