@@ -7,26 +7,13 @@
 
 ---
 
-- hosts: local
-  user: oklrelease
-  vars_files:
-    - "{{ ans_loc }}/roles/common/vars/deploy.yml"
-  tasks:
-    - include: "{{ ans_loc }}/roles/common/tasks/deploy.yml"
-
-    - name: clean target
-      command: chdir="{{ release_dir }}"
-               /usr/local/bin/lein clean
-
-    - name: build target
-      command: chdir="{{ release_dir }}"
-               /usr/local/bin/lein uberjar
-
 - hosts: varstar
   user: okluser
   vars_files:
     - "{{ ans_loc }}/roles/common/vars/deploy.yml"
   tasks:
+    - include: "{{ ans_loc }}/roles/common/tasks/deploy.yml"
+
     - name: start webserver
       command: chdir="{{ release_dir }}"
               /usr/local/bin/lein ring server
